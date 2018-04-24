@@ -64,7 +64,7 @@ void update();
   
 };
 
-TemperatureSensorLM35::TemperatureSensorLM35(int pin_, int resolution_){
+TemperatureSensorLM35::TemperatureSensorLM35(int pin_, int resolution_=16){
   sensor_pin = pin_;
   resolution = resolution_;
   adc_reference = 1024.0;
