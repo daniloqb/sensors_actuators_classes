@@ -10,12 +10,11 @@ class TemperatureSensor{
     float temperature;
     float thresholdUp;
     float thresholdDown;
-    boolean limitUp;
-    boolean limitDown;
-
     void checkThreshold();
 
   public:
+    boolean limitUp;
+    boolean limitDown;
     TemperatureSensor(){};
     float getTemperature(char scale);
     void setThreshold(float tempUp, float tempDown);
