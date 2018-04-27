@@ -2,6 +2,8 @@
 #define TemperatureSensors_h
 
 #include "Arduino.h"
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
 
 class TemperatureSensor{
@@ -130,5 +132,58 @@ void TemperatureSensorLM35::setAdcReference(float adc_){
 void TemperatureSensorLM35::setVoltageReference(float voltage_){
   voltage_reference = voltage_;
 }
+
+
+#define ONEWIRE_PIN_DEFAULT 2
+#define DALLAS_DEFAULT_RESOLUTION 9
+
+class TemperatureSensorDallas : public TemperatureSensor{
+  private:
+    int sensor_index;
+    int onewire_pin;
+    int resolution;
+    OneWire * wo;
+    DallasTemperature * sensors;
+
+  public:
+  TemperatureSensorDallas();
+  TemperatureSensorDallas(int _onewire_pin);
+
+    void begin();
+    void update();
+
+
+};
+
+
+ TemperatureSensorDallas::TemperatureSensorDallas(){
+  
+  onewire_pin = ONEWIRE_PIN_DEFAULT;
+  sensor_index = 0;
+  resolution = DALLAS_DEFAULT_RESOLUTION;
+ }
+
+  TemperatureSensorDallas::TemperatureSensorDallas(int _onewire_pin){
+
+  onewire_pin = _onewire_pin;
+  sensor_index = 0;
+  resolution = DALLAS_DEFAULT_RESOLUTION;
+ }
+
+void TemperatureSensorDallas::begin(){
+
+  wo = new OneWire(onewire_pin);
+  sensors = new DallasTemperature(wo);
+  sensors->begin();
+}
+
+void TemperatureSensorDallas::update(){
+  sensors->requestTemperatures();
+  temperature = sensors->getTempCByIndex(sensor_index);
+
+  checkThreshold();
+}
+
+
 
 #endif

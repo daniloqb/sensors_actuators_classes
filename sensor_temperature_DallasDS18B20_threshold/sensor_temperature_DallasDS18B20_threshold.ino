@@ -1,4 +1,4 @@
-/* 2018-04-25 -  Danilo Queiroz Barbosa
+/* 2018-04-27 -  Danilo Queiroz Barbosa
  * electronicdrops.com member
  * daniloqb@electronicdrops.com
  * 
@@ -7,19 +7,19 @@
  * Not worrying about the diferences and commands of its libraries.
  * For the moment is for simple use. To advanced use this helper class is not indicated.
  * 
- * Example for LM35 sensor connected on Analog Port A0. And with thresold Temperature Set.
+ * Example for Dallas DS18B20 sensor connected on Digital Port 2. And with thresold Temperature Set.
  */
 
 
 #include "TemperatureSensors.h"
 
-TemperatureSensorLM35 sensor = TemperatureSensorLM35(A0);
+TemperatureSensorDallas sensor = TemperatureSensorDallas();
 
 void setup() {
   Serial.begin(9600);
   sensor.begin();
 
-  sensor.setThreshold(27.0,25.5);
+  sensor.setThreshold(28.0,26.0);
 }
 
 void loop() {
