@@ -19,7 +19,8 @@ void setup() {
   Serial.begin(9600);
   sensor.begin();
 
-  sensor.setThreshold(28.0,26.0);
+  sensor.setHighLimitAlarm(28.0);
+  sensor.setLowLimitAlarm(26.0);
 }
 
 void loop() {
@@ -30,9 +31,9 @@ Serial.println('C');
 
 Serial.println("Threshold: ");
 Serial.print("Up: ");
-Serial.print(sensor.limitUp);
+Serial.print(sensor.getHighAlarm());
 Serial.print(" Down: ");
-Serial.println(sensor.limitDown);
+Serial.println(sensor.getLowAlarm());
 Serial.println();
 
 

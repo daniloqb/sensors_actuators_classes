@@ -10,16 +10,19 @@ class TemperatureSensor{
 
   protected:
     float temperature;
-    float thresholdUp;
-    float thresholdDown;
-    void checkThreshold();
+    float tempAlarmHigh;
+    float tempAlarmLow;
+    void checkAlarm();
 
   public:
-    boolean limitUp;
-    boolean limitDown;
+    boolean alarmHigh;
+    boolean alarmLow;
     TemperatureSensor(){};
     float getTemperature(char scale);
-    void setThreshold(float tempUp, float tempDown);
+    boolean setHighLimitAlarm(float temp);
+    boolean setLowLimitAlarm(float temp);
+    boolean getHighAlarm();
+    boolean getLowAlarm();
     void update(){};
     void begin(){};
   
@@ -40,24 +43,50 @@ float TemperatureSensor::getTemperature( char scale='C'){
   }
 }
 
-void TemperatureSensor::setThreshold(float tempUp, float tempDown = -55){
-  thresholdUp = tempUp;
-  thresholdDown = tempDown;
+
+boolean TemperatureSensor::setHighLimitAlarm(float temp){
+  
+//  if (temp < LM35_MIN_TEMPERATURE || temp > LM35_MAX_TEMPERATURE){
+//    return false;
+//  }
+
+  tempAlarmHigh = temp;
+  return true;
+  
 }
 
+boolean TemperatureSensor::setLowLimitAlarm(float temp){
+  
+  //if (temp < LM35_MIN_TEMPERATURE || temp > LM35_MAX_TEMPERATURE){
+  //  return false;
+ // }
 
-void TemperatureSensor::checkThreshold(){
-  if (temperature > thresholdUp){
-    limitUp = 1;
+  tempAlarmLow = temp;
+  return true;
+  
+}
+
+boolean TemperatureSensor::getHighAlarm(){
+  return alarmHigh;
+}
+
+boolean TemperatureSensor::getLowAlarm(){
+  return alarmLow;
+}
+
+void TemperatureSensor::checkAlarm(){
+    if (temperature >= tempAlarmHigh){
+    alarmHigh = 1;
   } else {
-    limitUp = 0;
+    alarmHigh = 0;
   }
-  if (temperature < thresholdDown){
-    limitDown = 1;
+  if (temperature <= tempAlarmLow){
+    alarmLow = 1;
   } else {
-    limitDown = 0;
+    alarmLow = 0;
   }
 }
+
 
 
 
@@ -91,10 +120,10 @@ TemperatureSensorLM35::TemperatureSensorLM35(int pin_, int resolution_=16){
   adc_reference = 1024.0;
   voltage_reference = 5.0;
 
-  limitUp = 0;
-  limitDown = 0;
-  thresholdUp = 150;
-  thresholdDown = -55;
+  alarmHigh = 0;
+  alarmLow = 0;
+  tempAlarmHigh = 150;
+  tempAlarmLow = -55;
 }
 
 TemperatureSensorLM35::TemperatureSensorLM35(int pin_, int resolution_, float adc_, float voltage_){
@@ -104,10 +133,10 @@ TemperatureSensorLM35::TemperatureSensorLM35(int pin_, int resolution_, float ad
   adc_reference = adc_;
   voltage_reference = voltage_;
 
-  limitUp = 0;
-  limitDown = 0;
-  thresholdUp = 150;
-  thresholdDown = -55;
+  alarmHigh = 0;
+  alarmLow = 0;
+  tempAlarmHigh = 150;
+  tempAlarmLow = -55;
 }
 
 void TemperatureSensorLM35::update(){
@@ -122,7 +151,7 @@ void TemperatureSensorLM35::update(){
   
   temperature = milivolts / 10;
 
-  checkThreshold();
+  checkAlarm();
 }
 
 void TemperatureSensorLM35::setAdcReference(float adc_){
@@ -181,7 +210,7 @@ void TemperatureSensorDallas::update(){
   sensors->requestTemperatures();
   temperature = sensors->getTempCByIndex(sensor_index);
 
-  checkThreshold();
+  checkAlarm();
 }
 
 
