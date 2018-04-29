@@ -4,6 +4,8 @@
 #include "Arduino.h"
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include <max6675.h>
+#include <SPI.h>
 
 
 class TemperatureSensor{
@@ -213,6 +215,48 @@ void TemperatureSensorDallas::update(){
   checkAlarm();
 }
 
+class TemperatureSensorThermopar : public TemperatureSensor{
+
+  private:
+    MAX6675 thermocouple;
+
+  public:
+    TemperatureSensorThermopar();
+    TemperatureSensorThermopar(int8_t SCLK, int8_t CS, int8_t MISO, double OFFSET = 0.0);
+    TemperatureSensorThermopar(int8_t CS, double OFFSET = 0.0);
+   
+    begin(int8_t SCLK, int8_t CS, int8_t MISO, double OFFSET = 0.0);
+    begin(int8_t CS, double OFFSET = 0.0);
+    update();
+    
+};
+
+TemperatureSensorThermopar::TemperatureSensorThermopar(){
+
+  thermocouple = MAX6675();
+}
+
+TemperatureSensorThermopar::TemperatureSensorThermopar(int8_t SCLK, int8_t CS, int8_t MISO, double OFFSET = 0.0){
+
+  thermocouple = MAX6675(SCLK, CS, MISO, OFFSET);
+}
+
+TemperatureSensorThermopar::TemperatureSensorThermopar(int8_t CS, double OFFSET = 0.0){
+
+  thermocouple = MAX6675(CS, OFFSET);
+}
+
+TemperatureSensorThermopar::begin(int8_t SCLK, int8_t CS, int8_t MISO, double OFFSET){
+  thermocouple.begin(SCLK, CS, MISO, OFFSET);
+}
+
+TemperatureSensorThermopar::begin(int8_t CS, double OFFSET){
+  thermocouple.begin(CS,OFFSET);
+}
+
+TemperatureSensorThermopar::update(){
+  temperature = thermocouple.readCelsius();
+}
 
 
 #endif
