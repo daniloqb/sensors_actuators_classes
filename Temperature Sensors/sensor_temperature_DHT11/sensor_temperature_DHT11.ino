@@ -14,7 +14,7 @@
 
 #include "TemperatureSensors.h"
 
-TemperatureSensorLM35 sensor = TemperatureSensorLM35(A0);
+TemperatureSensorDHT11 sensor = TemperatureSensorDHT11(2);
 
 void setup() {
   Serial.begin(9600);
@@ -23,21 +23,25 @@ void setup() {
 
 void loop() {
 sensor.update();
-Serial.println("Reading Temperature");
-Serial.println();
+Serial.print("Temperature: ");
 
 Serial.print(sensor.getTemperature());
-Serial.println('C');
+Serial.print("C ");
 
 Serial.print(sensor.getTemperature('F'));
-Serial.println('F');
+Serial.print("F ");
 
 Serial.print(sensor.getTemperature('K'));
-Serial.println('K');
+Serial.print("K ");
+Serial.println();
+
+Serial.print("Humidity: ");
+Serial.print(sensor.getHumidity());
+Serial.println("%");
 
 Serial.println();
 
 
-delay(1000);
+delay(2000);
 
 }

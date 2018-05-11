@@ -7,6 +7,8 @@
 #include <max6675.h>
 #include <SPI.h>
 #include <Thermistor.h>
+#include <DHT.h>
+#include <AM2320.h>
 
 class TemperatureSensor{
 
@@ -293,5 +295,90 @@ void TemperatureSensorNTC::update(){
   m_temperature = m_sensor->getTemperature();
 }
 
+class TemperatureSensorDHT11 : public TemperatureSensor{
+  private:
+    DHT * m_sensor;
+    float m_humidity;
+  public:
+    TemperatureSensorDHT11(uint8_t t_pin);
+    float getHumidity();
+    void begin();
+    void update();
+};
+
+TemperatureSensorDHT11::TemperatureSensorDHT11(uint8_t t_pin){
+  m_sensor = new DHT(t_pin, DHT11);
+}
+
+void TemperatureSensorDHT11::begin(){
+  m_sensor->begin();
+}
+
+void TemperatureSensorDHT11::update(){
+  m_temperature = m_sensor->readTemperature();
+  m_humidity = m_sensor->readHumidity();
+}
+
+float TemperatureSensorDHT11::getHumidity(){
+  return m_humidity;
+}
+
+
+class TemperatureSensorDHT22 : public TemperatureSensor{
+  private:
+    DHT * m_sensor;
+    float m_humidity;
+  public:
+    TemperatureSensorDHT22(uint8_t t_pin);
+    float getHumidity();
+    void begin();
+    void update();
+};
+
+TemperatureSensorDHT22::TemperatureSensorDHT22(uint8_t t_pin){
+  m_sensor = new DHT(t_pin, DHT22);
+}
+
+void TemperatureSensorDHT22::begin(){
+  m_sensor->begin();
+}
+
+void TemperatureSensorDHT22::update(){
+  m_temperature = m_sensor->readTemperature();
+  m_humidity = m_sensor->readHumidity();
+}
+
+float TemperatureSensorDHT22::getHumidity(){
+  return m_humidity;
+}
+
+class TemperatureSensorAM2320 : public TemperatureSensor{
+  private:
+    AM2320 * m_sensor;
+    float m_humidity;
+  public:
+    TemperatureSensorAM2320();
+    float getHumidity();
+    void begin();
+    void update();
+};
+
+TemperatureSensorAM2320::TemperatureSensorAM2320(){
+  m_sensor = new AM2320();
+}
+
+void TemperatureSensorAM2320::begin(){
+ 
+}
+
+void TemperatureSensorAM2320::update(){
+  m_sensor->Read();
+  m_temperature = m_sensor->t;
+  m_humidity = m_sensor->h;
+}
+
+float TemperatureSensorAM2320::getHumidity(){
+  return m_humidity;
+}
 
 #endif
